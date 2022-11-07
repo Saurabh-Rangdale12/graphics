@@ -23,7 +23,7 @@ int main()
 	cleardevice();
 	drawingpad();//main drawing canvas
 	getch();
-	closegraph();
+	// closegraph();
 }
  	void loading()
  	{
@@ -51,6 +51,7 @@ int main()
 			GetCursorPos(&cursorpos);//to get screen co-ordinate
 			ScreenToClient(GetForegroundWindow(),&cursorpos);//to convert screen co-ordinate to window co-ordinate
 			int x1,y1,x2,y2;
+			
 			if(ismouseclick(WM_LBUTTONDOWN))
 			{
 				x1=cursorpos.x;
@@ -62,12 +63,15 @@ int main()
 				x2=cursorpos.x;
 				y2=cursorpos.y;
 				clearmouseclick(WM_LBUTTONUP);
+				if(x2>=80)
+				{
 				if(choice==1)
 				{
 					double dis=sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
 					int xc=(x1+x2)/2;
 					int yc=(y1+y2)/2;
 					circle(xc,yc,dis/2);
+					circle(xc,yc,dis/2-1);
 				}
 				else if(choice==2)
 				{
@@ -76,11 +80,13 @@ int main()
 				else if(choice==3)
 				{
 					rectangle(x1,y1,x2,y2);
+					rectangle(x1+1,y1+1,x2-1,y2-1);
+				}
 				}
 			}
-			if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0) && cursorpos.x >=80)
+			if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0) && cursorpos.x >=100)
 			{
-				GetCursorPos(&cursorpos);
+				// GetCursorPos(&cursorpos);
 				switch(choice)
 				{
 					case 0:
@@ -98,11 +104,11 @@ int main()
 						boundaryfill(cursorpos.x,cursorpos.y,colr,colr);
 						break;
 					case 5:
-						std::cout<<"case 5 selected\n";
-						boundaryfill(cursorpos.x,cursorpos.y,BLACK,BLACK);
-						delay(500);
+						boundaryfill(cursorpos.x,cursorpos.y,colr,colr);
+						// delay(500);
 						break;
 				}
+				clearmouseclick(VK_LBUTTON);
 			}
 			// if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>81&&cursorpos.x<994&&cursorpos.y>1&&cursorpos.y<675)//getkeystate detects the mouse left button press
 			// {
@@ -421,9 +427,9 @@ int main()
 	// 	circle(44,378,3);
 	// }
 
-	void cir(){
-		circle(30,60,7);
-	}
+	// void cir(){
+	// 	circle(30,60,7);
+	// }
 	
 	void clear()
 	{
