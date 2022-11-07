@@ -1,22 +1,25 @@
 #include<graphics.h>
 #include<stdlib.h>
+#include <math.h>
+#include <iostream>
 int colr=0;
 int radii=2;
 void loading();
 void drawingpad();
 void setup();
 void boundaryfill(int x,int y,int fill,int boundary);
-void camera();
+// void camera();
+void cir();
 void eraser();
 void clear();
 int main()
 {
 	int gd=DETECT,gm=0;
 	initgraph(&gd,&gm,(char*)"");
-	initwindow(1000,680,"Setopati");
+	initwindow(1000,680,"Saurabh And Vishnu"); //windows coordinate
 	setbkcolor(WHITE);
 	cleardevice(); 
-	loading();//to show loading bar
+	//loading();//to show loading bar
 	cleardevice();
 	drawingpad();//main drawing canvas
 	getch();
@@ -24,9 +27,9 @@ int main()
 }
  	void loading()
  	{
- 	readimagefile("Logowt.jpg",385,250,585,450);//to display image 
+ 	readimagefile("./Logowt.jpg",385,250,585,450);//to display image 
  	setcolor(RED);
- 	outtextxy(830,630,(char*)"Developed by Santosh");
+ 	outtextxy(830,630,(char*)"Developed by Saurabh And Vishnu");
  	setcolor(RED);
  	rectangle(350,460,620,480);
 	for(int i=0;i<260;i++)//loading bar at begining
@@ -41,21 +44,100 @@ int main()
 	{
 		POINT cursorpos;
 		setup();
+		int choice=0;
 		while(1)
 		{
 			setcolor(colr);
 			GetCursorPos(&cursorpos);//to get screen co-ordinate
 			ScreenToClient(GetForegroundWindow(),&cursorpos);//to convert screen co-ordinate to window co-ordinate
-			if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>81&&cursorpos.x<994&&cursorpos.y>1&&cursorpos.y<675)//getkeystate detects the mouse left button press
+			int x1,y1,x2,y2;
+			if(ismouseclick(WM_LBUTTONDOWN))
 			{
-				circle(cursorpos.x,cursorpos.y,radii);	
-				boundaryfill(cursorpos.x,cursorpos.y,colr,colr);
+				x1=cursorpos.x;
+				y1=cursorpos.y;
+				clearmouseclick(WM_LBUTTONDOWN);
+			}
+			if(ismouseclick(WM_LBUTTONUP))
+			{
+				x2=cursorpos.x;
+				y2=cursorpos.y;
+				clearmouseclick(WM_LBUTTONUP);
+				if(choice==1)
+				{
+					double dis=sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2));
+					int xc=(x1+x2)/2;
+					int yc=(y1+y2)/2;
+					circle(xc,yc,dis/2);
+				}
+				else if(choice==2)
+				{
+					line(x1,y1,x2,y2);
+				}
+				else if(choice==3)
+				{
+					rectangle(x1,y1,x2,y2);
+				}
+			}
+			if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0) && cursorpos.x >=80)
+			{
+				GetCursorPos(&cursorpos);
+				switch(choice)
+				{
+					case 0:
+						break;
+					case 1:
+						// if(cursorpos.x >= 80+radii*10)
+						// 	circle(cursorpos.x, cursorpos.y, radii*10);
+						break;
+					case 2: //managed above (line)
+						break;
+					case 3: //managed above (rectangle)
+						break;
+					case 4:
+						circle(cursorpos.x,cursorpos.y,radii);	
+						boundaryfill(cursorpos.x,cursorpos.y,colr,colr);
+						break;
+					case 5:
+						std::cout<<"case 5 selected\n";
+						boundaryfill(cursorpos.x,cursorpos.y,BLACK,BLACK);
+						delay(500);
+						break;
+				}
+			}
+			// if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>81&&cursorpos.x<994&&cursorpos.y>1&&cursorpos.y<675)//getkeystate detects the mouse left button press
+			// {
+			// 	choice=0;
+			// }
+			//first button
+			if(((GetAsyncKeyState(VK_LBUTTON)) != 0) && cursorpos.x>=18 && cursorpos.x <=40 && cursorpos.y>=50 && cursorpos.y<=70)
+			{
+				choice=1; //circle
+			}
+			else if(((GetAsyncKeyState(VK_LBUTTON)) != 0) && cursorpos.x>=44 && cursorpos.x <=66 && cursorpos.y>=50 && cursorpos.y<=70)
+			{
+				choice=2; //line
+			}
+			else if(((GetAsyncKeyState(VK_LBUTTON)) != 0) && cursorpos.x>=18 && cursorpos.x <=40 && cursorpos.y>=74 && cursorpos.y<=94)
+			{
+				choice=3; //rectangle
+			}
+			else if(((GetAsyncKeyState(VK_LBUTTON)) != 0) && cursorpos.x>=44 && cursorpos.x <=66 && cursorpos.y>=74 && cursorpos.y<=94)
+			{
+				choice=4; //rectangle
+				outtextxy(13,598,(char*)"Choice:     ");
+				outtextxy(13,615,(char*)"4    ");
 			}
 			
+			// else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<40&&cursorpos.y>50&&cursorpos.y<70){
+			// 	circle(cursorpos.x,cursorpos.y,7);
+			// 	outtextxy(13,598,(char*)"Circle     ");
+			// 	outtextxy(13,615,(char*)"In Use    ");
+			// }
+
 			//Color black
-			else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<40&&cursorpos.y>180&&cursorpos.y<200)
+			if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<40&&cursorpos.y>180&&cursorpos.y<200)
 			{
-				colr=0;
+				colr=13;
 				setcolor(8);
 				outtextxy(13,598,(char*)"Marker     ");
 				outtextxy(13,615,(char*)"In Use    ");
@@ -151,15 +233,15 @@ int main()
 				outtextxy(13,615,(char*)"In Use    ");
 			}
 			//snapshot
-			else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<66&&cursorpos.y>354&&cursorpos.y<404)
-			{
+			// else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<66&&cursorpos.y>354&&cursorpos.y<404)
+			// {
  				
-				writeimagefile("snapshot.jpg",82,2,993,674);
-				setcolor(8);
-				outtextxy(13,598,(char*)"Snapshot");
-				outtextxy(13,615,(char*)"Taken ");
+			// 	writeimagefile("snapshot.jpg",82,2,993,674);
+			// 	setcolor(8);
+			// 	outtextxy(13,598,(char*)"Snapshot");
+			// 	outtextxy(13,615,(char*)"Taken ");
 				
-			}
+			// }
 			//Clear all
 			else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<66&&cursorpos.y>408&&cursorpos.y<458)
 			{
@@ -168,6 +250,15 @@ int main()
 				setcolor(8);
 				outtextxy(13,598,(char*)"Cleared    ");
 				outtextxy(13,615,(char*)"All      ");
+			}
+
+			else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<66&&cursorpos.y>354&&cursorpos.y<404)
+			{
+				// setup();
+				// setcolor(8);
+				choice=5;
+				outtextxy(13,598,(char*)"Flood    ");
+				outtextxy(13,615,(char*)"Fill      ");
 			}
 			//Brushsize
 			else if(((GetKeyState(VK_LBUTTON) & 0x8000) != 0)&&cursorpos.x>18&&cursorpos.x<40&&cursorpos.y>484&&cursorpos.y<508)
@@ -216,8 +307,8 @@ int main()
 		rectangle(81,1,994,675);
 		
 		//tool box vv
-		rectangle(10,170,74,468);
-		rectangle(11,171,73,467);
+		rectangle(10,40,74,468);
+		rectangle(11,41,73,467);
 		
 		//size outline
 		rectangle(10,474,74,560);
@@ -236,8 +327,12 @@ int main()
 		rectangle(18,512,40,536);
 		rectangle(44,512,66,536);
 		
-		
-		
+		//top buttons
+		rectangle(18,50,40,70); circle(29,60,7);
+		rectangle(44,50,66,70); line(49,55,61,65);
+
+		rectangle(18,74,40,94); rectangle(22,80,36,88);
+		rectangle(44,74,66,94);
 		//colors vv
 		rectangle(18,180,40,200);
 		rectangle(44,180,66,200);
@@ -259,12 +354,15 @@ int main()
 		rectangle(18,300,66,350);
 		
 		//Screenshot vv
-		camera();
-		rectangle(18,354,66,404);
+		// camera();
+		// rectangle(18,354,66,404);
 		
 		// clear vv
 		clear();
 		rectangle(18,408,66,458);
+
+		clear();
+		rectangle(18,354,66,404);
 		
 		/*-----------------------*/
 		
@@ -297,34 +395,34 @@ int main()
 	}
 	void boundaryfill(int x,int y, int fill, int boundary)
 	{
-		int current;
-		current=getpixel(x,y);
+		int current=getpixel(x,y);
 		if((current!=boundary)&&(current!=fill))
 		{
-			//setcolor(fill);
+			// setcolor(fill);
 			putpixel(x,y,fill);
 			boundaryfill(x+1,y,fill,boundary);
 			boundaryfill(x,y-1,fill,boundary);
 			boundaryfill(x-1,y,fill,boundary);
 			boundaryfill(x,y+1,fill,boundary);
-			
-		
-		
 		}
 	}
 	
-	void camera()
-	{
-		outtextxy(28,387,(char*)"snap");
-		rectangle(26,367,60,387);
-		rectangle(27,368,59,386);
+	// void camera()
+	// {
+	// 	outtextxy(28,387,(char*)"snap");
+	// 	rectangle(26,367,60,387);
+	// 	rectangle(27,368,59,386);
 		
-		rectangle(50,363,58,367);
-		rectangle(51,364,57,366);
+	// 	rectangle(50,363,58,367);
+	// 	rectangle(51,364,57,366);
 		
-		circle(44,378,6);
-		circle(44,378,7);
-		circle(44,378,3);
+	// 	circle(44,378,6);
+	// 	circle(44,378,7);
+	// 	circle(44,378,3);
+	// }
+
+	void cir(){
+		circle(30,60,7);
 	}
 	
 	void clear()
